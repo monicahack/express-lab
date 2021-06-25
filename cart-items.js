@@ -16,9 +16,17 @@ let nextID = 9;
 
 cart.get('/', (req, res) => {
     let price = parseFloat(req.query.maxPrice);
+    let product = req.query.prefix;
+    let pageSize = req.query.pageSize;
     let returnCart = cartItems;
     if(price){
         returnCart = cartItems.filter((item)=>item.price <= price);
+    }
+    if(product){
+        returnCart = cartItems.filter((item)=>item.product.toLowerCase().startsWith(product.toLowerCase()));
+    }
+    if(pageSize){
+        returnCart = cartItems.slice(0, pageSize);
     }
     res.status(200).json(returnCart);
 });
@@ -42,14 +50,15 @@ cart.post("/", (req, res) => {
 
 cart.put("/:id", (req, res) => {
     let updatedItem = req.body;
-    cartItems[req.params.id] = {...cartItems[req.params.id], ...updatedItem};
-    res.status(200).json(cartItems[req.params.id]);
+    let index = cartItems.findIndex((item)=>item.id === req.params.id);
+    cartItems[index] = {...cartItems[index], ...updatedItem};
+    res.status(200).json(cartItems[index]);
 });
 
 cart.delete("/:id", (req, res) => {
-    let deletedItem = req.params.id;
-    cartItems.splice(deletedItem);
-    res.status(204).json(deletedItem);
+    let index = cartItems.findIndex((item)=>item.id == req.params.id);
+    cartItems.splice(index, 1);
+    res.status(204).send();
 });
 
 module.exports = cart;
