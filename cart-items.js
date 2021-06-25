@@ -20,13 +20,13 @@ cart.get('/', (req, res) => {
     let pageSize = req.query.pageSize;
     let returnCart = cartItems;
     if(price){
-        returnCart = cartItems.filter((item)=>item.price <= price);
+        returnCart = returnCart.filter((item)=>item.price <= price);
     }
     if(product){
-        returnCart = cartItems.filter((item)=>item.product.toLowerCase().startsWith(product.toLowerCase()));
+        returnCart = returnCart.filter((item)=>item.product.toLowerCase().startsWith(product.toLowerCase()));
     }
     if(pageSize){
-        returnCart = cartItems.slice(0, pageSize);
+        returnCart = returnCart.slice(0, pageSize);
     }
     res.status(200).json(returnCart);
 });
